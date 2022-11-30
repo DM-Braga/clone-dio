@@ -1,4 +1,4 @@
-import { MdEmail, MdLock } from 'react-icons/md';
+import { MdEmail, MdLock, MdPerson } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,19 +9,20 @@ import { Header } from '../../components/Header';
 import { Input } from '../../components/Input';
 
 import { api } from '../../services/api';
-import { Container, Title, Column, CriarText, EsqueciText, Row, SubTitleLogin, TitleLogin, Wrapper } from './styles'
-import { IFormData } from './types';
+import { Container, Title, Column, SubTitleCadastro, TitleCadastro, Wrapper, TextPrivaty, TenhoConta } from './styles'
+import { IFormData, IReference } from './types';
 
 const schema = yup.object({
+  name: yup.string().required(),
   email: yup.string().email('email não é valido').required('Campo obrigatório'),
   password: yup.string().min(3, 'No minímo 3 caracteres').required('Campo obrigatório'),
 }).required();
 
-const Login = () => {
+const Cadastrar = ({onClick}: IReference) => {
   const navigate = useNavigate();
 
   const handleClickSignIn = () => {
-    navigate('/cadastrar')
+    navigate('/login')
   }
 
   const { control, handleSubmit, formState: { errors } } = useForm<IFormData>({
@@ -54,21 +55,22 @@ const Login = () => {
       </Column>
       <Column>
         <Wrapper>
-          <TitleLogin>Faça seu cadastro</TitleLogin>
-          <SubTitleLogin>Faça seu login e make the change._</SubTitleLogin>
+          <TitleCadastro>Comece agora grátis</TitleCadastro>
+          <SubTitleCadastro>Crie sua conta e make the change._</SubTitleCadastro>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <Input name="name" errorMessage={errors?.email?.message} control={control} placeholder="Nome Completo" leftIcon={<MdPerson />} />
             <Input name="email" errorMessage={errors?.email?.message} control={control} placeholder="E-mail" leftIcon={<MdEmail />} />
             <Input name="password" errorMessage={errors?.password?.message} control={control} placeholder="Senha" type="password" leftIcon={<MdLock />} />
             <Button title="Entrar" variant="secondary" type="submit" />
           </form>
-          <Row>
-            <EsqueciText>Esqueci minha senha</EsqueciText>
-            <CriarText onClick={handleClickSignIn}>Criar Conta</CriarText>
-          </Row>
+          <Column>
+            <TextPrivaty>Ao clicar em "criar minha conta grátis", declaro que aceito as Políticas de Privacidade e os Termos de Uso da DIO._</TextPrivaty>
+            <TenhoConta>já tenho conta. <a href="/login" onClick={handleClickSignIn}>Fazer login</a></TenhoConta>
+          </Column>
         </Wrapper>
       </Column>
     </Container>
   </>)
 }
 
-export { Login }
+export { Cadastrar }
